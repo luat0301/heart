@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini Hearts Explosion</title>
+  <style>
+    body {
+      background: #ffd6e8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    .heart {
+      width: 100px;
+      height: 90px;
+      background-color: #ff1a4b;
+      position: relative;
+      transform: rotate(-45deg);
+      animation: explode 0.8s infinite;
+      box-shadow: 0 0 20px #ff4d6d, 0 0 40px #ff4d6d;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: "";
+      width: 100px;
+      height: 90px;
+      background-color: #ff1a4b;
+      border-radius: 50%;
+      position: absolute;
+    }
+
+    .heart::before {
+      top: -50px;
+      left: 0;
+    }
+
+    .heart::after {
+      left: 50px;
+      top: 0;
+    }
+
+    @keyframes explode {
+      0% { transform: rotate(-45deg) scale(1); }
+      25% { transform: rotate(-45deg) scale(1.3); }
+      50% { transform: rotate(-45deg) scale(1); }
+      75% { transform: rotate(-45deg) scale(1.4); }
+      100% { transform: rotate(-45deg) scale(1); }
+    }
+
+    .mini-heart {
+      position: absolute;
+      width: 16px;
+      height: 14px;
+      background-color: var(--color, #ff1a4b);
+      transform: rotate(-45deg);
+      animation: shoot 2.2s forwards ease-out;
+      z-index: 1;
+    }
+
+    .mini-heart::before,
+    .mini-heart::after {
+      content: "";
+      width: 16px;
+      height: 14px;
+      background-color: var(--color, #ff1a4b);
+      border-radius: 50%;
+      position: absolute;
+    }
+
+    .mini-heart::before {
+      top: -8px;
+      left: 0;
+    }
+
+    .mini-heart::after {
+      left: 8px;
+      top: 0;
+    }
+
+    @keyframes shoot {
+      to {
+        transform: translate(var(--x), var(--y)) scale(0.5) rotate(720deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="heart" id="mainHeart"></div>
+
+  <script>
+    const heart = document.getElementById('mainHeart');
+    const colors = ['#ff1a4b', '#ff69b4', '#ffb6c1', '#ffa07a', '#ff6347', '#ffcc00', '#e066ff', '#00bfff', '#00fa9a'];
+
+    function createMiniHearts() {
+      const heartRect = heart.getBoundingClientRect();
+      const centerX = heartRect.left + heartRect.width / 2;
+      const centerY = heartRect.top + heartRect.height / 2;
+
+      for (let i = 0; i < 60; i++) {
+        const mini = document.createElement('div');
+        mini.classList.add('mini-heart');
+
+        const angle = Math.random() * 2 * Math.PI;
+        const distance = 100 + Math.random() * 800;
+        const x = Math.cos(angle) * distance + 'px';
+        const y = Math.sin(angle) * distance + 'px';
+
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        mini.style.setProperty('--x', x);
+        mini.style.setProperty('--y', y);
+        mini.style.setProperty('--color', color);
+
+        mini.style.left = `${centerX}px`;
+        mini.style.top = `${centerY}px`;
+
+        document.body.appendChild(mini);
+
+        setTimeout(() => {
+          mini.remove();
+        }, 2200);
+      }
+    }
+
+    setInterval(createMiniHearts, 900);
+  </script>
+
+</body>
+</html>
